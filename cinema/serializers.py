@@ -90,7 +90,10 @@ class MovieSessionDetailSerializer(MovieSessionSerializer):
 
 
 class TicketSerializer(serializers.ModelSerializer):
-    movie_session = MovieSessionListSerializer(many=False, read_only=True)
+    movie_session = serializers.PrimaryKeyRelatedField(
+        queryset=MovieSession.objects.all(),
+        required=True,
+    )
 
     class Meta:
         model = Ticket
