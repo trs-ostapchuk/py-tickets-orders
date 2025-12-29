@@ -101,4 +101,4 @@ class OrderSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Order
-        fields = ("id", "user", "tickets", "created_at")
+        fields = ("id", "tickets", "created_at")
