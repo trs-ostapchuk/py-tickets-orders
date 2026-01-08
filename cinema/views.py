@@ -47,7 +47,8 @@ class MovieViewSet(viewsets.ModelViewSet):
     @staticmethod
     def _params_to_ints(query_string):
         """
-        Converts a string of format 1, 2, 3... to a list of integers [1, 2, 3...]
+        Converts a string of format 1, 2, 3...
+        to a list of integers [1, 2, 3...]
         """
         return [int(str_id) for str_id in query_string.split(",")]
 
@@ -104,7 +105,10 @@ class MovieSessionViewSet(viewsets.ModelViewSet):
         Filter movie sessions by optional 'date' and 'movie' query parameters.
         """
         queryset = (self.queryset.select_related("movie", "cinema_hall")
-                    .prefetch_related("movie__genres", "movie__actors", "tickets"))
+                    .prefetch_related(
+                        "movie__genres",
+                        "movie__actors",
+                        "tickets"))
         params = self.request.query_params
 
         date = params.get("date")

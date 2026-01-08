@@ -126,7 +126,11 @@ class TicketCreateSerializer(serializers.ModelSerializer):
                 {"seat": f"Seat must be between 1 and {hall.seats_in_row}"}
             )
 
-        if Ticket.objects.filter(movie_session=movie_session, row=row, seat=seat).exists():
+        if Ticket.objects.filter(
+                movie_session=movie_session,
+                row=row,
+                seat=seat
+        ).exists():
             raise serializers.ValidationError(
                 {"seat": "This seat is already taken for this movie session."}
             )
@@ -143,7 +147,11 @@ class TicketRetrieveSerializer(serializers.ModelSerializer):
 
 
 class OrderCreateSerializer(serializers.ModelSerializer):
-    tickets = TicketCreateSerializer(many=True, read_only=False, allow_empty=False)
+    tickets = TicketCreateSerializer(
+        many=True,
+        read_only=False,
+        allow_empty=False
+    )
 
     class Meta:
         model = Order
