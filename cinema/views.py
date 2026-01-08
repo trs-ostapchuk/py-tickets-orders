@@ -18,6 +18,7 @@ from cinema.serializers import (
     MovieSessionListSerializer,
     MovieDetailSerializer,
     MovieSessionDetailSerializer,
+    MovieSessionRetrieveSerializer,
     MovieListSerializer,
     OrderRetrieveSerializer,
     OrderCreateSerializer,
@@ -94,7 +95,7 @@ class MovieSessionViewSet(viewsets.ModelViewSet):
             return MovieSessionListSerializer
 
         if self.action == "retrieve":
-            return MovieSessionDetailSerializer
+            return MovieSessionRetrieveSerializer
 
         return MovieSessionSerializer
 
