@@ -64,7 +64,7 @@ class MovieViewSet(viewsets.ModelViewSet):
         """
         Apply filtering by title, genres, and actors based on query parameters.
         """
-        queryset = self.queryset
+        queryset = self.queryset.prefetch_related("genres", "actors")
 
         title = self.request.query_params.get("title")
         genres = self.request.query_params.get("genres")
@@ -103,7 +103,8 @@ class MovieSessionViewSet(viewsets.ModelViewSet):
         """
         Filter movie sessions by optional 'date' and 'movie' query parameters.
         """
-        queryset = self.queryset
+        queryset = (self.queryset.select_related("movie", "cinema_hall")
+                    .prefetch_related("movie__genres", "movie__actors", "tickets"))
         params = self.request.query_params
 
         date = params.get("date")
@@ -122,7 +123,11 @@ class OrderViewSet(viewsets.ModelViewSet):
     queryset = Order.objects.all()
 
     def get_queryset(self):
-        return self.queryset.filter(user=self.request.user)
+        return self.queryset.filter(user=self.request.user).prefetch_related(
+            "tickets__movie_session__movie__genres",
+            "tickets__movie_session__movie__actors",
+            "tickets__movie_session__cinema_hall"
+        )
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
