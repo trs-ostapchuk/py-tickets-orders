@@ -107,6 +107,32 @@ class TicketCreateSerializer(serializers.ModelSerializer):
         model = Ticket
         fields = ("id", "row", "seat", "movie_session")
 
+    def validate(self, attrs):
+        """
+        Custom validation for creating tickets
+        """
+        movie_session = attrs.get("movie_session")
+        row = attrs.get("row")
+        seat = attrs.get("seat")
+        hall = movie_session.cinema_hall
+
+        if not (1 <= row <= hall.rows):
+            raise serializers.ValidationError(
+                {"row": f"Row must be between 1 and {hall.rows}"}
+            )
+
+        if not (1 <= seat <= hall.seats_in_row):
+            raise serializers.ValidationError(
+                {"seat": f"Seat must be between 1 and {hall.seats_in_row}"}
+            )
+
+        if Ticket.objects.filter(movie_session=movie_session, row=row, seat=seat).exists():
+            raise serializers.ValidationError(
+                {"seat": "This seat is already taken for this movie session."}
+            )
+
+        return attrs
+
 
 class TicketRetrieveSerializer(serializers.ModelSerializer):
     movie_session = MovieSessionListSerializer(read_only=True)
